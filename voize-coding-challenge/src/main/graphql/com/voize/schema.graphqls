@@ -1,0 +1,26 @@
+type Query {
+    klienten(
+        bereichId: Int,
+        nurPdBereiche: Boolean,
+        auchAbwesende: Boolean
+    ): [Klient!]!
+}
+
+type Klient {
+    id: Int!
+    name: String!
+    vorname: String!
+    geburtsdatum: String
+    pflegegrad: String
+    pflegegradText: String
+    pflegestatusText: String
+    anwesend: Boolean!
+    bereichszuordnungen(alle: Boolean): [Bereichszuordnung!]
+    bereichId: Int
+    bereichName: String
+}
+
+type Bereichszuordnung {
+    zimmer: String
+}
+

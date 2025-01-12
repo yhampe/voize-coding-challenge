@@ -1,0 +1,22 @@
+query GetResidents(
+    $bereichId: Int,
+    $nurPdBereiche: Boolean,
+    $auchAbwesende: Boolean
+) {
+    klienten(
+        bereichId: $bereichId
+        nurPdBereiche: $nurPdBereiche
+        auchAbwesende: $auchAbwesende
+    ) {
+        id
+        geburtsdatum
+        name
+        vorname
+        anwesend
+        bereichId
+        bereichName
+        pflegegrad
+        pflegegradText
+        pflegestatusText
+    }
+}

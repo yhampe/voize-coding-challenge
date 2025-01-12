@@ -1,0 +1,8 @@
+<configuration>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="io.ktor" level="INFO"/>
+    <logger name="com.voize" level="INFO"/>
+</configuration>
