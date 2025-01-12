@@ -1,13 +1,11 @@
 package com.voize.client
 
-import com.voize.model.auth.AuthRequest
-import com.voize.model.auth.AuthResponse
-import com.voize.model.auth.ErrorResponse
-import com.voize.model.auth.KeyResponse
+import com.voize.model.auth.*
 import com.voize.util.PasswordEncryption
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.io.IOException
 import org.slf4j.LoggerFactory
@@ -33,10 +31,14 @@ class VivendiRestClient(
             }
 
             when (response.status) {
-                HttpStatusCode.OK -> response.body<AuthResponse>().token
+                HttpStatusCode.OK -> response.bodyAsText().trim('"')
+                HttpStatusCode.Forbidden -> {
+                    val errorResponse = response.body<ErrorResponse>()
+                    throw IllegalArgumentException(errorResponse.getErrorMessage())
+                }
                 HttpStatusCode.Unauthorized -> {
-                    val error = response.body<ErrorResponse>()
-                    throw IllegalArgumentException(error.Message)
+                    val errorResponse = response.body<ErrorResponse>()
+                    throw IllegalArgumentException(errorResponse.getErrorMessage())
                 }
                 else -> throw IOException("Server error: ${response.status}")
             }

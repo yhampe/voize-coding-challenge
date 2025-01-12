@@ -11,9 +11,10 @@ class VivendiService(
 ) {
     private val logger = LoggerFactory.getLogger(VivendiService::class.java)
 
-    suspend fun authenticate(username: String, password: String): String? {
-        return restClient.authenticate(username, password).getOrNull()
+    suspend fun authenticate(username: String, password: String): Result<String> {
+        return restClient.authenticate(username, password)
     }
+
 
     suspend fun getResidents(authToken:String):List<Resident>? {
         return try {

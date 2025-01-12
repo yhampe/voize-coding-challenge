@@ -12,7 +12,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Before
-import kotlin.test.DefaultAsserter.assertNull
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -45,25 +44,29 @@ class VivendiServiceTest {
 
     @Test
     fun `authentication succeeds with valid credentials`() = runBlocking {
-        val token = service.authenticate("demo01", "demo01")
-
-        assertNotNull(token) {
+        val result = service.authenticate("demo01", "demo01")
+        println("successful authentication result: $result")
+        assertTrue(result.isSuccess,"Authentication should succeed")
+        assertNotNull(result.getOrNull()) {
             "Authentication should return a token"
         }
-        println(token)
     }
 
     @Test
     fun `authentication fails with invalid credentials`() = runBlocking {
-        val token = service.authenticate("wrong", "credentials")
-        assertNull(token) {"Authentication with wrong credentials should return null"}
+        val result = service.authenticate("wrong", "credentials")
+        println("unsuccessful authentication result: $result")
+        assertTrue(result.isFailure,"Authentication shouldn't succeed")
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
     }
 
     @Test
     fun `call getResidents should return some residents`() = runBlocking {
-        val token = service.authenticate("demo01", "demo01")
-        assertNotNull(token) {
-            "Authentication should return a token"
+        val authResult = service.authenticate("demo01", "demo01")
+        assertTrue(authResult.isSuccess,"Authentication should succeed")
+        val token = authResult.getOrNull()
+        requireNotNull(token) {
+            "Authentication token should not be null"
         }
         val residents = service.getResidents(token)
         print("residents: $residents")
